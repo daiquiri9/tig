@@ -177,10 +177,15 @@ argv_from_env(const char **argv, const char *name)
 {
 	char *env = argv ? getenv(name) : NULL;
 	int argc = 0;
+	bool ok;
 
-	if (env && *env)
-		env = strdup(env);
-	return !env || argv_from_string(argv, &argc, env);
+	if (!env || !*env)
+		return true;
+
+	env = strdup(env);
+	ok = env ? argv_from_string(argv, &argc, env) : false;
+	free(env);
+	return ok;
 }
 
 void
